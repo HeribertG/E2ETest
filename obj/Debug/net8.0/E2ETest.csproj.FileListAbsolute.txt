@@ -394,3 +394,4 @@ C:\SourceCode\E2ETest\obj\Debug\net8.0\refint\E2ETest.dll
 C:\SourceCode\E2ETest\obj\Debug\net8.0\E2ETest.pdb
 C:\SourceCode\E2ETest\obj\Debug\net8.0\E2ETest.genruntimeconfig.cache
 C:\SourceCode\E2ETest\obj\Debug\net8.0\ref\E2ETest.dll
+C:\SourceCode\E2ETest\obj\Debug\net8.0\E2ETest.sourcelink.json
