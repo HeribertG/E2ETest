@@ -43,7 +43,7 @@ public class PlaywrightSetup : PageTest
         _recordAllTests = bool.Parse(_configuration["PlaywrightConfig:RecordAllTests"] ?? "false");
         _isHeadless = bool.Parse(_configuration["PlaywrightConfig:HeadLess"] ?? "true");
 
-        BaseUrl = _configuration["PlaywrightConfig:BaseUrl"] ?? throw new InvalidOperationException("Can't read the base url."); 
+        BaseUrl = _configuration["PlaywrightConfig:BaseUrl"] ?? throw new InvalidOperationException("Can't read the base url.");
 
         CurrentDate = DateTime.Now.ToString("dd.MM.yyyy");
         TimeStamp = DateTime.Now.Ticks.ToString();
@@ -65,7 +65,7 @@ public class PlaywrightSetup : PageTest
         _wrapper = new Wrapper(Page);
 
 
-        await Page.GotoAsync(BaseUrl+"login");
+        await Page.GotoAsync(BaseUrl + "login");
 
 
         TestContext.Out.WriteLine("Browser started");

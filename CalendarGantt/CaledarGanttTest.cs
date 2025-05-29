@@ -49,7 +49,7 @@ namespace E2ETest.CalendarGantt
                 await Actions.WaitForSpinnerToDisappear();
                 await Actions.Wait3500();
 
-                Assert.That(pageTracker.HasChanged(Page) && Page.Url.Contains("absence"), Is.True, "Could not open Absence Page");               
+                Assert.That(pageTracker.HasChanged(Page) && Page.Url.Contains("absence"), Is.True, "Could not open Absence Page");
             }
             else
             {

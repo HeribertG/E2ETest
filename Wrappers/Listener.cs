@@ -53,7 +53,7 @@ public sealed class Listener
             }
             finally
             {
-                _responseHandled.TrySetResult(true); 
+                _responseHandled.TrySetResult(true);
             }
         };
     }
@@ -78,19 +78,19 @@ public sealed class Listener
 
             var completedTask = await Task.WhenAny(
                 _responseHandled.Task,
-                Task.Delay(5000, cts.Token) 
+                Task.Delay(5000, cts.Token)
             );
 
             if (completedTask != _responseHandled.Task)
             {
-                _responseHandled.TrySetResult(true); 
+                _responseHandled.TrySetResult(true);
                 TestContext.WriteLine("Response handling timed out after 5 seconds");
             }
         }
         catch (Exception ex)
         {
             TestContext.WriteLine($"Error waiting for response handling: {ex.Message}");
-            _responseHandled.TrySetResult(true); 
+            _responseHandled.TrySetResult(true);
             throw;
         }
     }

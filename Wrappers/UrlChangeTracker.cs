@@ -11,10 +11,10 @@ namespace E2ETest.Wrappers;
 /// has changed during test execution. It's particularly useful for validating navigation flows 
 /// and page transitions in UI tests.
 /// </remarks>
-public class PageUrlTracker 
+public class PageUrlTracker
 {
     private readonly string _initialUrl;
-  
+
 
     public PageUrlTracker(IPage page)
     {
@@ -37,9 +37,9 @@ public class PageUrlTracker
 
     public void Dispose()
     {
-     
+
         GC.SuppressFinalize(this);
     }
 
-    
+
 }
