@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("E2ETest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ac853df0fe69fdaf7f0a3feb0a66a02e6196ca60")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ed3a7a037909318936b100773ea97f9b04d8a53")]
 [assembly: System.Reflection.AssemblyProductAttribute("E2ETest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("E2ETest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
