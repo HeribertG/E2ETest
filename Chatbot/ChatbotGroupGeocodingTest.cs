@@ -90,9 +90,11 @@ public class ChatbotGroupGeocodingTest : ChatbotTestBase
     [Test]
     public async Task Klacksy_GroupByOrtschaften_NoCoordinates_BehaviorObservation()
     {
-        // Precondition matching the user's scenario: no group has coordinates yet, so propose_customer_grouping
-        // has no anchors and must tell the user to geocode the location groups first. Observational: we print
-        // Klacksy's verbatim answer and assert only that it responds without an API error.
+        // Precondition matching the user's scenario: no group has coordinates. That alone no longer blocks
+        // propose_customer_grouping — customers whose address city equals a uniquely named group are still
+        // placed by name, and only when no name matches either does the skill ask the user to rename or
+        // geocode the location groups. Observational: we print Klacksy's verbatim answer and assert only
+        // that it responds without an API error.
         await DbHelper.ExecuteSqlAsync("UPDATE \"group\" SET latitude = NULL, longitude = NULL WHERE latitude IS NOT NULL OR longitude IS NOT NULL");
 
         await EnsureChatOpen();
