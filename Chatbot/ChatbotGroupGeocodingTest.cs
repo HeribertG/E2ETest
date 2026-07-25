@@ -8,7 +8,7 @@
  * longitude become non-null. The precondition (coordinates cleared) and teardown (coordinates cleared
  * again) keep the dev data unchanged.
  *
- * Secondary smoke test (default model, NOT a correctness assertion): propose_customer_grouping in dry-run
+ * Secondary smoke test (default model, NOT a correctness assertion): propose_grouping in dry-run
  * — only that Klacksy reaches the skill and answers without an API error (the dry-run has no DB side
  * effect; applying would mass-move customers, so it is intentionally not exercised here — the apply write
  * path is covered by unit tests).
@@ -26,7 +26,7 @@ namespace Klacks.E2ETest.Chatbot;
 public class ChatbotGroupGeocodingTest : ChatbotTestBase
 {
     private const string SkillGeocode = "geocode_location_groups";
-    private const string SkillPropose = "propose_customer_grouping";
+    private const string SkillPropose = "propose_grouping";
 
     private const int ActionTimeoutMs = 120000;
     private const int MaxConfirmTurns = 6;
@@ -78,7 +78,7 @@ public class ChatbotGroupGeocodingTest : ChatbotTestBase
         var before = await GetMessageCount();
         await SendChatMessage(
             "Schlage mir eine geografische Gruppierung der Kunden vor - nur ein Vorschlag, noch nicht anwenden. " +
-            "Rufe dazu propose_customer_grouping auf.");
+            "Rufe dazu propose_grouping mit entityType='Customer' auf.");
         var response = await WaitForBotResponse(before, ActionTimeoutMs);
         TestContext.Out.WriteLine($"Bot: {Trim(response)}");
 
@@ -91,7 +91,7 @@ public class ChatbotGroupGeocodingTest : ChatbotTestBase
     public async Task Klacksy_GroupByOrtschaften_NoCoordinates_BehaviorObservation()
     {
         // Precondition matching the user's scenario: no group has coordinates. That alone no longer blocks
-        // propose_customer_grouping — customers whose address city equals a uniquely named group are still
+        // propose_grouping — customers whose address city equals a uniquely named group are still
         // placed by name, and only when no name matches either does the skill ask the user to rename or
         // geocode the location groups. Observational: we print Klacksy's verbatim answer and assert only
         // that it responds without an API error.
