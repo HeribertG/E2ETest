@@ -1,12 +1,18 @@
 // Copyright (c) Heribert Gasparoli Private. All rights reserved.
 
 /**
- * Live proof of the data-driven recipe "add-customer-to-nearest-group" (add a customer to the geographically
- * nearest group). The recipe chain is ask clientName -> search search_employees(entityType=Customer)
- * (capture clientId) -> mutate add_client_to_nearest_group. The nearest group is derived from group
- * coordinates (geocoded from the group's city name). DB-asserted via the group_item row that links the
- * customer to a group carrying coordinates. Requires geocoded groups (city names) and a customer with a
- * geocoded address; both are present in the integration DB. Explicit: LLM-driven and slow, run on demand.
+ * Live proof that Klacksy adds a customer to the geographically nearest group via plain function
+ * calling on the skills search_employees(entityType=Customer) and add_client_to_nearest_group — no
+ * dedicated recipe. The guided "add-customer-to-nearest-group" recipe was retired 2026-07-28 (product
+ * decision: a catalog action must not carry both a recipe and a skill for the same target; the skill
+ * already offers a superset — it also covers external employees via the sibling
+ * "add-extern-employee-to-nearest-group" recipe, which still exists and is unaffected). The chat
+ * message supplies the start date up front so the whole flow fits in a single turn; without it,
+ * add_client_to_nearest_group asks the user for the missing start date instead of guessing one. The
+ * nearest group is derived from group coordinates (geocoded from the group's city name). DB-asserted
+ * via the group_item row that links the customer to a group carrying coordinates. Requires geocoded
+ * groups (city names) and a customer with a geocoded address; both are present in the integration DB.
+ * Explicit: LLM-driven and slow, run on demand.
  */
 
 using Klacks.E2ETest.Chatbot.Helpers;
@@ -66,7 +72,7 @@ public class ChatbotRecipeNearestGroupTest : ChatbotTestBase
 
         var before = await GetMessageCount();
         await SendChatMessage(
-            $"Füge den Kunden {customerName} zur nächstgelegenen Gruppe hinzu.");
+            $"Füge den Kunden {customerName} ab heute zur nächstgelegenen Gruppe hinzu.");
         var response = await WaitForBotResponse(before, TurnTimeoutMs);
         TestContext.Out.WriteLine($"Bot (nearest): {Trim(response)}");
 
@@ -81,7 +87,7 @@ public class ChatbotRecipeNearestGroupTest : ChatbotTestBase
             Assert.That(addCalls, Is.GreaterThanOrEqualTo(1),
                 "add_client_to_nearest_group must have run at least once");
             Assert.That(response, Does.Not.Contain(NoActionNoticeMarker),
-                "a completed recipe must not emit the no-action notice");
+                "a completed placement must not emit the no-action notice");
         });
     }
 
@@ -112,8 +118,8 @@ public class ChatbotRecipeNearestGroupTest : ChatbotTestBase
             "AND g.latitude IS NOT NULL AND g.longitude IS NOT NULL");
 
     // A type-2 customer with a geocoded address whose clean (title-free) "FirstName Name" resolves to
-    // EXACTLY ONE customer under a per-token Contains match over first_name/name/company, so the recipe's
-    // search step captures a single clientId.
+    // EXACTLY ONE customer under a per-token Contains match over first_name/name/company, so
+    // search_employees(entityType=Customer) resolves a single clientId for the bot to act on.
     private static async Task<(string Name, string Id)> UniqueCustomerWithCoordsAsync()
     {
         var result = (await DbHelper.ExecuteSqlAsync(
