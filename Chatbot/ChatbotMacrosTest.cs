@@ -22,9 +22,9 @@ namespace Klacks.E2ETest.Chatbot
 
         private const string MacroScript =
             "import weekday\n" +
-            "import sorate\n\n" +
+            "import we2rate\n\n" +
             "IF weekday >= 6 THEN\n" +
-            "  OUTPUT 1, sorate\n" +
+            "  OUTPUT 1, we2rate\n" +
             "ELSE\n" +
             "  OUTPUT 1, 0\n" +
             "END IF";

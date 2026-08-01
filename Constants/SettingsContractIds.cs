@@ -13,8 +13,11 @@ public static class SettingsContractIds
     public const string ModalFulltime = "fullTime";
     public const string ModalNightRate = "nightRate";
     public const string ModalHolidayRate = "holidayRate";
-    public const string ModalSaRate = "saRate";
-    public const string ModalSoRate = "soRate";
+    public const string ModalWe1Rate = "we1Rate";
+    public const string ModalWe2Rate = "we2Rate";
+    public const string ModalWe3Rate = "we3Rate";
+    public const string ModalNightStart = "contractNightStart";
+    public const string ModalNightEnd = "contractNightEnd";
     public const string ModalValidFrom = "validFrom";
     public const string ModalValidUntil = "validUntil";
     public const string CalendarDropdown = "contract-calendar-dropdown";
