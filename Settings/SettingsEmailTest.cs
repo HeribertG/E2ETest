@@ -12,6 +12,12 @@ namespace Klacks.E2ETest
     {
         private Listener _listener;
 
+        [OneTimeSetUp]
+        public async Task EnableExpertModeForFixture()
+        {
+            await EnableExpertModeAndDismissOnboardingAsync();
+        }
+
         [SetUp]
         public async Task Setup()
         {

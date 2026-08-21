@@ -18,6 +18,12 @@ public class SettingsSchedulingRulesTest : PlaywrightSetup
     private const string TestMinRestDays = "2";
     private const string TestMaxDailyHours = "10";
 
+    [OneTimeSetUp]
+    public async Task EnableExpertModeForFixture()
+    {
+        await EnableExpertModeAndDismissOnboardingAsync();
+    }
+
     [SetUp]
     public async Task Setup()
     {

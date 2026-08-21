@@ -19,6 +19,12 @@ public class SettingsSchedulingDefaultsTest : PlaywrightSetup
     private const string TestMaximumHours = "210";
     private const string TestMaxWorkDays = "6";
 
+    [OneTimeSetUp]
+    public async Task EnableExpertModeForFixture()
+    {
+        await EnableExpertModeAndDismissOnboardingAsync();
+    }
+
     [SetUp]
     public async Task Setup()
     {

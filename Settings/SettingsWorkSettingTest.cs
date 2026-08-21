@@ -23,6 +23,12 @@ public class SettingsWorkSettingTest : PlaywrightSetup
     private static string _originalDayVisibleBefore = string.Empty;
     private static string _originalDayVisibleAfter = string.Empty;
 
+    [OneTimeSetUp]
+    public async Task EnableExpertModeForFixture()
+    {
+        await EnableExpertModeAndDismissOnboardingAsync();
+    }
+
     [SetUp]
     public async Task Setup()
     {

@@ -15,6 +15,12 @@ public class SettingsLlmProvidersTest : PlaywrightSetup
     private static string? _createdProviderId;
     private static string? _createdProviderName;
 
+    [OneTimeSetUp]
+    public async Task EnableExpertModeForFixture()
+    {
+        await EnableExpertModeAndDismissOnboardingAsync();
+    }
+
     [SetUp]
     public async Task Setup()
     {

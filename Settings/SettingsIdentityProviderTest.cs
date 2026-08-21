@@ -19,6 +19,12 @@ namespace Klacks.E2ETest
         private static string? _zflexProviderId;
         private static string? _zflexProviderName;
 
+        [OneTimeSetUp]
+        public async Task EnableExpertModeForFixture()
+        {
+            await EnableExpertModeAndDismissOnboardingAsync();
+        }
+
         [SetUp]
         public async Task Setup()
         {

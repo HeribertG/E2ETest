@@ -1,4 +1,6 @@
-﻿using Klacks.E2ETest.Constants;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Klacks.E2ETest.Constants;
 using Klacks.E2ETest.Wrappers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
@@ -99,6 +101,35 @@ public class PlaywrightSetup : PageTest
     }
 
     public new IPage Page => _page ?? throw new InvalidOperationException("Page is not initialized");
+
+    /// <summary>
+    /// Enables Expert Mode (settings.expertMode is normally forced on only by a pending onboarding
+    /// tour) and dismisses the Klacksy onboarding offer for the shared dev database, so gated Settings
+    /// sections render and the offer overlay does not block the first interaction of the fixture.
+    /// </summary>
+    protected async Task EnableExpertModeAndDismissOnboardingAsync()
+    {
+        await Actions.SetLocalStorage(TestEnvironmentIds.ExpertModeStorageKey, "true");
+
+        using var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+        };
+        using var http = new HttpClient(handler) { BaseAddress = new Uri(TestEnvironmentIds.ApiBaseUrl) };
+
+        var login = await http.PostAsJsonAsync("Accounts/LoginUser", new { email = UserName, password = Password });
+        login.EnsureSuccessStatusCode();
+        var loginBody = await login.Content.ReadFromJsonAsync<OnboardingTestLoginResponse>()
+            ?? throw new InvalidOperationException("Login returned no body");
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginBody.Token);
+
+        var dismiss = await http.PostAsJsonAsync(
+            TestEnvironmentIds.OnboardingStateEndpoint,
+            new { status = TestEnvironmentIds.OnboardingDismissedStatus });
+        dismiss.EnsureSuccessStatusCode();
+    }
+
+    private sealed record OnboardingTestLoginResponse(string Token);
 
     public async Task Login()
     {

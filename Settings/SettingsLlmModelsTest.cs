@@ -15,6 +15,12 @@ public class SettingsLlmModelsTest : PlaywrightSetup
     private static string? _createdModelId;
     private static string? _createdModelName;
 
+    [OneTimeSetUp]
+    public async Task EnableExpertModeForFixture()
+    {
+        await EnableExpertModeAndDismissOnboardingAsync();
+    }
+
     [SetUp]
     public async Task Setup()
     {
