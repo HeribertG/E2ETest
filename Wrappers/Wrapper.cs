@@ -248,6 +248,24 @@ public sealed class Wrapper
     }
 
     /// <summary>
+    /// Performs a right-click at a pixel offset relative to the top-left corner of the first
+    /// element matching the CSS selector. Needed for canvas-based grids where rows are not DOM elements.
+    /// </summary>
+    /// <param name="cssSelector">The CSS selector of the element to right-click</param>
+    /// <param name="x">Horizontal offset in pixels from the element's top-left corner</param>
+    /// <param name="y">Vertical offset in pixels from the element's top-left corner</param>
+    public async Task RightClickByCssSelectorAtPosition(string cssSelector, float x, float y)
+    {
+        await _page.WaitForSelectorAsync(cssSelector, new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.DEFAULT_TIMEOUT });
+        await _page.Locator(cssSelector).First.ClickAsync(new LocatorClickOptions
+        {
+            Button = MouseButton.Right,
+            Position = new Position { X = x, Y = y },
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
+    }
+
+    /// <summary>
     /// Checks if an element is disabled. Returns true if element is null or disabled.
     /// </summary>
     public async Task<bool> IsDisabled(IElementHandle? element)
@@ -1785,5 +1803,91 @@ public sealed class Wrapper
         await element.HoverAsync();
     }
 
+    /// <summary>
+    /// Reads the trimmed text content of the first element matching the CSS selector,
+    /// or an empty string when no such element becomes visible within the timeout.
+    /// </summary>
+    /// <param name="cssSelector">The CSS selector of the element to read</param>
+    /// <param name="timeoutMs">Maximum time to wait for the element to become visible</param>
+    public async Task<string> GetTextContentByCssSelector(string cssSelector, int timeoutMs = WrapperConstants.SHORT_TIMEOUT)
+    {
+        try
+        {
+            var element = await _page.WaitForSelectorAsync(cssSelector, new()
+            {
+                State = WaitForSelectorState.Visible,
+                Timeout = timeoutMs
+            });
+
+            var text = element == null ? null : await element.TextContentAsync();
+            return text?.Trim() ?? string.Empty;
+        }
+        catch (TimeoutException)
+        {
+            return string.Empty;
+        }
+    }
+
     #endregion Element Queries
+
+    #region Popups and Screenshots
+
+    /// <summary>
+    /// Runs the given action (e.g. a click via another wrapper method) and waits for a new
+    /// browser tab to open in the same context. Returns the URL of the new tab and closes it,
+    /// or null when no tab opened within the timeout.
+    /// </summary>
+    /// <param name="action">The interaction that is expected to open a new tab</param>
+    /// <param name="expectedUrlPrefix">Optional URL prefix the new tab is expected to navigate to; waits briefly for it when the tab opens on about:blank first</param>
+    /// <param name="timeoutMs">Maximum time to wait for the new tab</param>
+    public async Task<string?> RunAndWaitForPopupUrlAsync(Func<Task> action, string? expectedUrlPrefix = null, int timeoutMs = WrapperConstants.DEFAULT_TIMEOUT)
+    {
+        try
+        {
+            var popup = await _page.Context.RunAndWaitForPageAsync(action, new BrowserContextRunAndWaitForPageOptions
+            {
+                Timeout = timeoutMs
+            });
+
+            if (expectedUrlPrefix != null && !popup.Url.StartsWith(expectedUrlPrefix))
+            {
+                try
+                {
+                    await popup.WaitForURLAsync(url => url.StartsWith(expectedUrlPrefix), new()
+                    {
+                        Timeout = WrapperConstants.SHORT_TIMEOUT
+                    });
+                }
+                catch (TimeoutException)
+                {
+                    TestContext.Out.WriteLine($"Popup URL did not reach prefix '{expectedUrlPrefix}' - current: {popup.Url}");
+                }
+            }
+
+            var url = popup.Url;
+            await popup.CloseAsync();
+            return url;
+        }
+        catch (TimeoutException)
+        {
+            TestContext.Out.WriteLine("No new tab opened within timeout");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Takes a full-page screenshot of the current page and saves it to the given file path.
+    /// </summary>
+    /// <param name="filePath">Absolute path of the PNG file to write</param>
+    public async Task TakeScreenshotAsync(string filePath)
+    {
+        await _page.ScreenshotAsync(new PageScreenshotOptions
+        {
+            Path = filePath,
+            FullPage = true
+        });
+        TestContext.Out.WriteLine($"Screenshot saved: {filePath}");
+    }
+
+    #endregion Popups and Screenshots
 }
