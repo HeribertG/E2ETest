@@ -266,6 +266,23 @@ public sealed class Wrapper
     }
 
     /// <summary>
+    /// Performs a left-click at a pixel offset relative to the top-left corner of the first
+    /// element matching the CSS selector. Needed for canvas-based grids where rows are not DOM elements.
+    /// </summary>
+    /// <param name="cssSelector">The CSS selector of the element to click</param>
+    /// <param name="x">Horizontal offset in pixels from the element's top-left corner</param>
+    /// <param name="y">Vertical offset in pixels from the element's top-left corner</param>
+    public async Task ClickByCssSelectorAtPosition(string cssSelector, float x, float y)
+    {
+        await _page.WaitForSelectorAsync(cssSelector, new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.DEFAULT_TIMEOUT });
+        await _page.Locator(cssSelector).First.ClickAsync(new LocatorClickOptions
+        {
+            Position = new Position { X = x, Y = y },
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
+    }
+
+    /// <summary>
     /// Checks if an element is disabled. Returns true if element is null or disabled.
     /// </summary>
     public async Task<bool> IsDisabled(IElementHandle? element)

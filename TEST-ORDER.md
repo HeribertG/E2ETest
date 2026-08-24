@@ -27,6 +27,7 @@ Die E2E-Tests werden in einer definierten Reihenfolge ausgefuehrt, gesteuert dur
 | 31 | `Settings/SettingsLlmProvidersTest.cs` | Settings LLM Providers (CRUD) |
 | 32 | `Settings/SettingsLlmModelsTest.cs` | Settings LLM Models (CRUD) |
 | 33 | `Gantt/GanttGroupFilterTest.cs` | Gantt Group Filter |
+| 34 | `Gantt/AbsenceGanttPdfExportTests.cs` | Absence Gantt PDF Export (neuer Tab statt Download) |
 | 38 | `Group/GroupTreeCreationTest.cs` | Group Tree erstellen (Create/Verify/Delete) |
 | 40 | `Shifts/ShiftCutsBasicTest.cs` | Shift Cuts Basic |
 | 41 | `Shifts/ShiftCutsNestedTest.cs` | Shift Cuts Nested |
@@ -56,6 +57,7 @@ Die E2E-Tests werden in einer definierten Reihenfolge ausgefuehrt, gesteuert dur
 | 102 | `WorkSchedule/WorkScheduleGroupSwitchTest.cs` | Schedule Group Switch |
 | 103 | `WorkSchedule/WorkScheduleGroupSwitchStressTest.cs` | Schedule Group Switch Stress |
 | 104 | `WorkSchedule/WorkScheduleCollisionTraceTest.cs` | Schedule Collision Trace |
+| 105 | `WorkSchedule/SchedulePdfExportTests.cs` | Schedule PDF Export (neuer Tab statt Download) |
 | 110 | `WorkSchedule/WizardAutofillTest.cs` | Schedule Autofill Wizard Smoke |
 | - | `WorkSchedule/WizardBenchmarkTrainingTest.cs` | `[Explicit]` Training-Benchmark (CI ueberspringt) |
 
